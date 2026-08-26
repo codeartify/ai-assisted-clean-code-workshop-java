@@ -322,5 +322,90 @@ class PaymentReceivedControllerTest {
         ).orElseThrow();
         org.assertj.core.api.Assertions.assertThat(updatedBillingReference.getStatus()).isEqualTo("PAID");
     }
-}
 
+    @Test
+    void paymentOfOneInvoiceKeepsMembershipSuspendedUntilEveryInvoiceIsPaid() throws Exception {
+        UUID membershipId = UUID.randomUUID();
+        membershipRepository.save(new MembershipEntity(
+                membershipId,
+                "11111111-1111-1111-1111-111111111111",
+                "aaaaaa12-aaaa-aaaa-aaaa-aaaaaaaaaa12",
+                999,
+                12,
+                "SUSPENDED",
+                "NON_PAYMENT",
+                LocalDate.parse("2026-01-01"),
+                LocalDate.parse("2027-01-01")
+        ));
+        billingReferenceRepository.save(new MembershipBillingReferenceEntity(
+                UUID.randomUUID(),
+                membershipId,
+                "external-007",
+                "local-007",
+                LocalDate.parse("2026-02-01"),
+                "OPEN",
+                Instant.parse("2026-01-01T10:00:00Z"),
+                Instant.parse("2026-01-01T10:00:00Z")
+        ));
+        billingReferenceRepository.save(new MembershipBillingReferenceEntity(
+                UUID.randomUUID(),
+                membershipId,
+                "external-008",
+                "local-008",
+                LocalDate.parse("2026-03-01"),
+                "OPEN",
+                Instant.parse("2026-01-01T10:00:00Z"),
+                Instant.parse("2026-01-01T10:00:00Z")
+        ));
+
+        mockMvc.perform(post("/api/memberships/payment-received")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "externalInvoiceId": "external-007",
+                                  "paidAt": "2026-02-10T10:00:00Z"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.newMembershipStatus").value("SUSPENDED"))
+                .andExpect(jsonPath("$.reactivated").value(false));
+
+        mockMvc.perform(post("/api/memberships/payment-received")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "externalInvoiceId": "external-008",
+                                  "paidAt": "2026-02-11T10:00:00Z"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.previousMembershipStatus").value("SUSPENDED"))
+                .andExpect(jsonPath("$.newMembershipStatus").value("ACTIVE"))
+                .andExpect(jsonPath("$.reactivated").value(true));
+    }
+
+    @Test
+    void callbackWithoutAnIdentifierIsRejected() throws Exception {
+        mockMvc.perform(post("/api/memberships/payment-received")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "paidAt": "2026-02-10T10:00:00Z"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void callbackForUnknownInvoiceIsReportedAsNotFound() throws Exception {
+        mockMvc.perform(post("/api/memberships/payment-received")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "externalInvoiceId": "external-unknown",
+                                  "paidAt": "2026-02-10T10:00:00Z"
+                                }
+                                """))
+                .andExpect(status().isNotFound());
+    }
+}
