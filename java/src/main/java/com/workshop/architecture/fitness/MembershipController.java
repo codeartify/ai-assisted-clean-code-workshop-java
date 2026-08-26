@@ -34,6 +34,7 @@ public class MembershipController {
     private final InMemoryEmailService emailService;
     private final RestClient restClient;
     private final String billingSenderEmailAddress;
+    private final MembershipReactivationPolicy reactivationPolicy = new MembershipReactivationPolicy();
 
     public MembershipController(
             MembershipRepository membershipRepository,
@@ -576,14 +577,16 @@ public class MembershipController {
 
         if (membership.isCancelled()) {
             message = "Payment recorded; membership is cancelled and remains unchanged";
-        } else if (membership.isSuspendedForNonPayment() && allBillingReferencesArePaid) {
-            if (!paidAt.atZone(ZoneOffset.UTC).toLocalDate().isAfter(membership.getEndDate())) {
-                membership.reactivateAfterPayment();
-                membership = membershipRepository.save(membership);
-                newMembershipStatus = membership.getStatus();
-                message = "Payment recorded; membership reactivated";
-                reactivated = true;
-            }
+        } else if (reactivationPolicy.allowsReactivation(
+                membership,
+                paidAt.atZone(ZoneOffset.UTC).toLocalDate(),
+                allBillingReferencesArePaid
+        )) {
+            membership.reactivateAfterPayment();
+            membership = membershipRepository.save(membership);
+            newMembershipStatus = membership.getStatus();
+            message = "Payment recorded; membership reactivated";
+            reactivated = true;
         }
 
         return ResponseEntity.ok(new PaymentReceivedResponse(
