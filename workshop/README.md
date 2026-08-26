@@ -27,6 +27,13 @@ The callback authentication mechanism is intentionally unresolved: the repositor
 
 Every solution branch is the starting point for the next exercise. Participant work can be local and nondeterministic; the trainer switches to the next branch only for the sample-solution walkthrough.
 
+## Trainer materials
+
+- Day plan and trainer schedule: [Google Doc](https://docs.google.com/document/d/1XkfkWm36xWhyYSrYRbuV1-Mt4tw9chwyuYCSTgflhH0/edit)
+- Editable presentation: [Google Slides](https://docs.google.com/presentation/d/123zizmbeCzcsFFFdBxZp7V64Hqlunne4XxUQNexBVtw/edit)
+- Markdown presentation with speaker notes: `workshop/slides/ai_assisted_clean_code_workshop_day1.md`
+- Exercise start/sample mapping and reveal discipline: `workshop/trainer-branch-guide.md`
+
 ## Working agreement
 
 1. Start each exercise from the branch named in its brief.

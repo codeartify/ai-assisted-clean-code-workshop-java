@@ -28,5 +28,6 @@ Reusable workflows live under `.agents/skills/`:
 - `non-brittle-tests` for behavior definition and test-scope decisions
 - `clean-code-refactoring` for small behavior-preserving refactoring
 - `modern-application-architecture` for placement, boundaries, and escalation gates
+- `membership-payment-change` for the complete repository-specific callback workflow
 
 Use the repository-specific orchestration skill when present. If product, security, or ownership knowledge is missing, stop and ask rather than manufacturing a rule.
