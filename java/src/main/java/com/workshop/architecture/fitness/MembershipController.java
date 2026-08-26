@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +33,7 @@ public class MembershipController {
     private final InMemoryEmailService emailService;
     private final RestClient restClient;
     private final String billingSenderEmailAddress;
-    private final MembershipReactivationPolicy reactivationPolicy = new MembershipReactivationPolicy();
+    private final RecordMembershipPayment recordMembershipPayment;
 
     public MembershipController(
             MembershipRepository membershipRepository,
@@ -42,6 +41,7 @@ public class MembershipController {
             CustomerRepository customerRepository,
             PlanRepository planRepository,
             InMemoryEmailService emailService,
+            RecordMembershipPayment recordMembershipPayment,
             RestClient.Builder restClientBuilder,
             @Value("${workshop.external-invoice-provider.base-url}") String externalInvoiceProviderBaseUrl,
             @Value("${workshop.billing.sender-email-address}") String billingSenderEmailAddress
@@ -51,6 +51,7 @@ public class MembershipController {
         this.customerRepository = customerRepository;
         this.planRepository = planRepository;
         this.emailService = emailService;
+        this.recordMembershipPayment = recordMembershipPayment;
         this.restClient = restClientBuilder.baseUrl(externalInvoiceProviderBaseUrl).build();
         this.billingSenderEmailAddress = billingSenderEmailAddress;
     }
@@ -503,100 +504,7 @@ public class MembershipController {
     }
 
     @PostMapping("/payment-received")
-    @Transactional
     ResponseEntity<PaymentReceivedResponse> paymentReceived(@RequestBody PaymentReceivedRequest request) {
-        MembershipBillingReferenceEntity billingReference;
-        MembershipEntity membership;
-        Instant paidAt;
-        String previousMembershipStatus;
-        String newMembershipStatus;
-        String message;
-        boolean reactivated;
-
-        if ((request.externalInvoiceId() == null || request.externalInvoiceId().isBlank())
-                && (request.externalInvoiceReference() == null || request.externalInvoiceReference().isBlank())
-                && (request.membershipId() == null || request.membershipId().isBlank())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "At least one invoice or membership identifier must be provided"
-            );
-        }
-
-        if (request.externalInvoiceId() != null && !request.externalInvoiceId().isBlank()) {
-            billingReference = billingReferenceRepository.findByExternalInvoiceId(request.externalInvoiceId())
-                    .orElse(null);
-        } else {
-            billingReference = null;
-        }
-
-        if (billingReference == null
-                && request.externalInvoiceReference() != null
-                && !request.externalInvoiceReference().isBlank()) {
-            billingReference = billingReferenceRepository.findByExternalInvoiceReference(
-                    request.externalInvoiceReference()
-            ).orElse(null);
-        }
-
-        if (billingReference == null && request.membershipId() != null && !request.membershipId().isBlank()) {
-            billingReference = billingReferenceRepository.findByMembershipId(UUID.fromString(request.membershipId()))
-                    .stream()
-                    .findFirst()
-                    .orElse(null);
-        }
-
-        if (billingReference == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No billing reference was found");
-        }
-
-        paidAt = request.paidAt() == null ? Instant.now() : request.paidAt();
-        message = billingReference.isPaid()
-                ? "Payment was already recorded; membership status unchanged"
-                : "Payment recorded; membership status unchanged";
-
-        if (!billingReference.isPaid()) {
-            billingReference.markPaid(paidAt);
-            billingReference = billingReferenceRepository.save(billingReference);
-        }
-
-        UUID billingReferenceMembershipId = billingReference.getMembershipId();
-
-        membership = membershipRepository.findById(billingReferenceMembershipId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Membership %s was not found".formatted(billingReferenceMembershipId)
-                ));
-
-        previousMembershipStatus = membership.getStatus();
-        newMembershipStatus = membership.getStatus();
-        reactivated = false;
-
-        boolean allBillingReferencesArePaid = billingReferenceRepository
-                .findByMembershipId(billingReferenceMembershipId)
-                .stream()
-                .allMatch(MembershipBillingReferenceEntity::isPaid);
-
-        if (membership.isCancelled()) {
-            message = "Payment recorded; membership is cancelled and remains unchanged";
-        } else if (reactivationPolicy.allowsReactivation(
-                membership,
-                paidAt.atZone(ZoneOffset.UTC).toLocalDate(),
-                allBillingReferencesArePaid
-        )) {
-            membership.reactivateAfterPayment();
-            membership = membershipRepository.save(membership);
-            newMembershipStatus = membership.getStatus();
-            message = "Payment recorded; membership reactivated";
-            reactivated = true;
-        }
-
-        return ResponseEntity.ok(new PaymentReceivedResponse(
-                paidAt,
-                membership.getId().toString(),
-                billingReference.getId().toString(),
-                previousMembershipStatus,
-                newMembershipStatus,
-                reactivated,
-                message
-        ));
+        return ResponseEntity.ok(recordMembershipPayment.handle(request));
     }
 }
