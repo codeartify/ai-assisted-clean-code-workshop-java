@@ -1,5 +1,11 @@
-package com.workshop.architecture.fitness;
+package com.workshop.architecture.fitness.payment.record;
 
+import com.workshop.architecture.fitness.MembershipBillingReferenceEntity;
+import com.workshop.architecture.fitness.MembershipBillingReferenceRepository;
+import com.workshop.architecture.fitness.MembershipEntity;
+import com.workshop.architecture.fitness.MembershipRepository;
+import com.workshop.architecture.fitness.PaymentReceivedRequest;
+import com.workshop.architecture.fitness.PaymentReceivedResponse;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.UUID;

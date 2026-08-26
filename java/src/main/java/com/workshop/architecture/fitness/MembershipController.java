@@ -1,5 +1,6 @@
 package com.workshop.architecture.fitness;
 
+import com.workshop.architecture.fitness.payment.record.RecordMembershipPayment;
 import jakarta.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDate;

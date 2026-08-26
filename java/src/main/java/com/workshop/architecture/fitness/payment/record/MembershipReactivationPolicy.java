@@ -1,5 +1,6 @@
-package com.workshop.architecture.fitness;
+package com.workshop.architecture.fitness.payment.record;
 
+import com.workshop.architecture.fitness.MembershipEntity;
 import java.time.LocalDate;
 
 /**
