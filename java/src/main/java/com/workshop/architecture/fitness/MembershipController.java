@@ -567,9 +567,14 @@ public class MembershipController {
         newMembershipStatus = membership.getStatus();
         reactivated = false;
 
+        boolean allBillingReferencesArePaid = billingReferenceRepository
+                .findByMembershipId(billingReferenceMembershipId)
+                .stream()
+                .allMatch(MembershipBillingReferenceEntity::isPaid);
+
         if (membership.isCancelled()) {
             message = "Payment recorded; membership is cancelled and remains unchanged";
-        } else if (membership.isSuspendedForNonPayment()) {
+        } else if (membership.isSuspendedForNonPayment() && allBillingReferencesArePaid) {
             if (!paidAt.atZone(ZoneOffset.UTC).toLocalDate().isAfter(membership.getEndDate())) {
                 membership.reactivateAfterPayment();
                 membership = membershipRepository.save(membership);
@@ -590,4 +595,3 @@ public class MembershipController {
         ));
     }
 }
-
