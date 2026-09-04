@@ -18,14 +18,20 @@ Complete `contract-evidence-template.md`. Verify the installed Spring version, r
 
 Point: plausibility is not evidence; verify or explicitly escalate.
 
-## 3. Make behavior explicit before test generation
+## 3. Use ZOMBIES to choose the next behavior test
 
 Start: `ai-day1-02-verified-contracts`  
 Sample: `ai-day1-03-behaviour-specification`
 
-Use the `non-brittle-tests` skill. Write Given/When/Then behavior for one invoice, multiple invoices, callback retry, cancelled membership, unknown invoice, missing identifier, and ended membership. Add the smallest public-surface tests that protect these outcomes.
+Use the `non-brittle-tests` skill and complete
+`behaviour-matrix-template.md`. Move from Zero to One to Many while checking
+boundary behavior, interface definition, and exceptional behavior. Mark missing
+product or security rules **ASK**. Then add the smallest scenario that can reveal
+new behavior: two unpaid invoices, followed by a callback that pays only one.
 
-Point: behavior first; test shape second.
+Point: one invoice cannot distinguish “any paid” from “all paid”; two invoices
+can. Choose the smallest next test that can reveal the difference, and keep the
+scenario and solution simple.
 
 ## 4. Give the agent feedback at the right cost
 
