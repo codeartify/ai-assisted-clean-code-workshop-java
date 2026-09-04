@@ -27,18 +27,24 @@ Inspect, in this order:
 Do not answer framework questions from memory when the installed version, source,
 or a focused executable test can answer them.
 
-## 2. State behavior in business language
+## 2. Choose the next behavior test with ZOMBIES
 
-Before generating tests or implementation, write Given/When/Then outcomes. Include:
+Before generating tests or implementation, complete
+`workshop/behaviour-matrix-template.md`:
 
-- one invoice and multiple invoices;
-- the boundary of “all relevant invoices are paid”;
-- duplicate delivery;
-- cancelled and ended memberships;
-- other suspension reasons;
-- missing and unknown identifiers;
-- invalid identifiers if the change touches parsing;
-- failure atomicity and callback authentication.
+1. move from Zero to One to Many or more complex cases;
+2. at each step scan boundary behavior, interface definition, and exceptional
+   behavior;
+3. choose the smallest unproven scenario that can make a wrong rule and the
+   intended rule produce different results;
+4. keep both the scenario and the production change simple.
+
+For this callback, one invoice cannot distinguish “reactivate after any payment”
+from “reactivate after all relevant invoices are paid.” The first revealing case
+uses two unpaid invoices and pays only one. Also consider duplicate delivery,
+cancelled and ended memberships, other suspension reasons, missing and unknown
+identifiers, invalid identifiers when parsing changes, failure atomicity, and
+callback authentication.
 
 If “relevant invoice,” identifier precedence, authentication, or failure behavior
 is not proven, record the question and ask the responsible person. Do not invent a

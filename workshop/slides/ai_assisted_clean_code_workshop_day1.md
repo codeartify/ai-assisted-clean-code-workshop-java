@@ -324,94 +324,119 @@ Story beat: The implementation is no longer merely plausible, but not every prod
 <!-- _class: section -->
 
 <p class="number">03</p>
-<p class="kicker">GATE 3 · BEHAVIOR</p>
+<p class="kicker">GATE 3 · ZOMBIES</p>
 
-# What must remain true?
+# Which test should we write next?
 
-Define the caller action and observable outcome before deciding test shape.
+Move from Zero to One to Many. Check boundaries, interfaces and exceptions as
+the cases grow.
 
 <!--
-Story beat: Move from evidence to a testable contract. Trainer: State that asking an agent to ‘add tests’ too early often produces implementation mirrors. Transition: Define behavior precisely. Timing: 1 minute.
+Story beat: Gate 2 ended with one concrete testing gap: every existing callback test uses one invoice. Gate 3 asks which test should come next. Trainer: Say: “We do not need more tests at random. We need the smallest next case that can prove or disprove the rule.” Introduce ZOMBIES as the guide used in this block. Transition: First show why the current One-invoice case cannot reveal the defect. Timing: 1 minute.
+
+[Sources]
+- James Grenning, “TDD Guided by ZOMBIES”: https://blog.wingman-sw.com/tdd-guided-by-zombies
 -->
 
 ---
 
-<p class="kicker">BEHAVIOR</p>
+<p class="kicker">WHY ONE IS NOT ENOUGH</p>
 
-# Action + conditions + observable outcome
+# One invoice cannot expose the bug
 
-## Given membership and invoice state, when a payment callback is recorded, then the response and persisted invoice/membership state have defined outcomes.
+## 1 invoice → paid → ACTIVE
+## “Any payment” passes ✓
+## “All paid” passes ✓
 
-<div class="callout">Class names, package placement, repository call counts, and private methods are not caller behavior.</div>
+<div class="callout">Both rules pass. Move to MANY to reveal the difference.</div>
 
 <!--
-Story beat: Give a usable definition, not a slogan. Trainer: Mark the action, conditions, and observable outcomes in the sentence. Explain that behavior may be observed through HTTP plus persisted state because those are owned surfaces here. Transition: Compare a behavior test with an implementation test. Timing: 5 minutes.
+Story beat: Make the missing coverage obvious. Trainer: Explain that with one invoice, both implementations return ACTIVE after payment: the incorrect rule “reactivate after any payment” and the intended rule “reactivate after all payments.” Ask: “What is the smallest extra case that makes those rules produce different results?” The answer is two invoices. Transition: Moving from One to Many is exactly the kind of next-test decision ZOMBIES helps us make. Timing: 3 minutes.
+
+[Sources]
+- Workshop branch 02: https://github.com/codeartify/ai-assisted-clean-code-workshop-java/tree/ai-day1-02-verified-contracts
 -->
 
 ---
 
-<p class="kicker">TEST INTENT</p>
+<p class="kicker">ZOMBIES</p>
 
-# Protect meaning—not the route the code currently takes
+# A practical guide for choosing the next test
 
-<div class="grid"><div class="card"><h3>Behavior-focused</h3>membershipRemainsSuspendedWhenOneRelevantInvoiceIsStillOpen</div><div class="card"><h3>Implementation-focused</h3>callsBillingReferenceRepositoryTwice</div></div>
+<div class="grid"><div class="card"><h3>Z → O → M</h3><strong>ZERO → ONE → MANY</strong><br/>Start with the smallest case. Add complexity only when it teaches something.</div><div class="card"><h3>B · I · E</h3><strong>BOUNDARIES · INTERFACES · EXCEPTIONS</strong><br/>Check each as the cases grow.</div></div>
 
-<div class="callout">Move orchestration to another class: the left test survives; the right test punishes the refactoring.</div>
+<div class="callout">S — Keep scenarios and solutions simple.</div>
 
 <!--
-Story beat: Make brittleness concrete. Trainer: Ask participants which test a real caller would care about. Explain state/output assertions versus interaction assertions and when an interaction can legitimately be the contract. Transition: Expand the behavior sentence into a small decision table. Timing: 5 minutes.
+Story beat: Give participants a practical way to choose the next TDD scenario. Trainer: Explain the two dimensions. Move from Zero to One to Many. While doing that, check boundary behavior, the interface the caller needs, and exceptional behavior. The S is the discipline across every step: keep the scenario and the production change simple. ZOMBIES is a guide for choosing the next useful test, not a requirement to fill every possible combination. Transition: Apply the guide to this payment callback. Timing: 5 minutes.
+
+[Sources]
+- James Grenning, “TDD Guided by ZOMBIES”: https://blog.wingman-sw.com/tdd-guided-by-zombies
 -->
 
 ---
 
-<p class="kicker">BEHAVIOR MATRIX</p>
+<p class="kicker">ZOMBIES MATRIX</p>
 
-# Cover business decisions and boundaries
+# Map the payment callback from Zero to Many
 
-| Given | When | Then |
-| --- | --- | --- |
-| Two invoices open | First is paid | Invoice paid · membership suspended |
-| One remains open | Last is paid | Membership active |
-| Cancelled membership | Invoice is paid | Membership stays cancelled |
-| Already-paid invoice | Callback repeats | Successful idempotent result |
+| ZOMBIES | ZERO | ONE | MANY |
+| --- | --- | --- | --- |
+| **B · BOUNDARIES** | No matching invoice → 404 | Last unpaid invoice → ACTIVE | One still unpaid → SUSPENDED |
+| **I · INTERFACES** | Callback requires an identifier | Invoice ID / reference selects one invoice | `membershipId` matches many → ASK |
+| **E · EXCEPTIONS** | No identifier → 400 | Already paid → success, no change | Cancelled / ended / wrong reason → unchanged |
+
+<div class="callout">S · Start with the smallest case that teaches something. Add only enough code to pass it.</div>
 
 <!--
-Story beat: Demonstrate how a matrix reveals missing decisions. Trainer: Open workshop/behaviour-matrix.md and show additional missing/unknown identifier and date/suspension-reason cases. Point out that callback authentication and undefined invoice relevance are intentionally not asserted. Transition: Participants use the testing skill to turn the matrix into stable tests. Timing: 6 minutes.
+Story beat: Apply ZOMBIES to the payment callback rather than discussing the acronym in isolation. Trainer: Read the columns from Zero to Many. Then scan the rows. Highlight the Many/Boundary cell: paying one of two invoices must leave the membership SUSPENDED. That is the first case that distinguishes “any payment” from “all payments.” Highlight the Many/Interface cell marked ASK: a membership ID can identify several invoices, so the test must not invent which one was paid. The authentication mechanism and invoice-relevance rules also remain outside the matrix until an owner answers them. Transition: Participants now use the matrix to choose and implement the smallest missing tests. Timing: 7 minutes.
+
+[Sources]
+- James Grenning, “TDD Guided by ZOMBIES”: https://blog.wingman-sw.com/tdd-guided-by-zombies
+- Workshop branch 03: https://github.com/codeartify/ai-assisted-clean-code-workshop-java/tree/ai-day1-03-behaviour-specification
 -->
 
 ---
 
 <p class="kicker">CONCRETE PRACTICE 3</p>
 
-# Define behavior before generating test mechanics
+# Use ZOMBIES to choose the next test
 
 **Branch:** 02 → 03
 
 1. Invoke non-brittle-tests
-2. Write Given/When/Then sentences
-3. Choose an owned public surface
-4. Reject unowned interaction assertions
+2. Fill the Zero · One · Many columns
+3. Check Boundaries · Interfaces · Exceptions
+4. Write the smallest unproven scenario
 
-<div class="callout">Debrief: Would each test survive an internal redesign? Is every assertion observable and required?</div>
+<div class="callout">Debrief: Which MANY case exposed a rule that ONE could not? Which cell must remain ASK?</div>
 
 <!--
-Participant work: 22 minutes. Trainer sample: Switch to ai-day1-03-behaviour-specification and walk from the matrix to PaymentReceivedControllerTest. Highlight response and persisted-state assertions. Show a mock-heavy counterexample and remove call-count assertions. Transition: The behaviors are stable; Gate 4 chooses how cheaply and realistically to prove them. Timing: 50-minute loop.
+Participant work: 22 minutes. Starting point: ai-day1-02-verified-contracts. Trainer instructions: (1) Participants invoke non-brittle-tests. (2) They fill the ZOMBIES matrix using only repository evidence and the agreed feature rule. (3) They mark unresolved policy or security cells ASK instead of inventing an answer. (4) They select the smallest missing scenario that distinguishes correct from incorrect behavior: two invoices, pay only one. (5) They add and run the focused callback tests. Sample solution: switch to ai-day1-03-behaviour-specification. Show paymentOfOneInvoiceKeepsMembershipSuspendedUntilEveryInvoiceIsPaid, callbackWithoutAnIdentifierIsRejected, and callbackForUnknownInvoiceIsReportedAsNotFound. Debrief: Ask which One test already passed, which Many case exposed the missing rule, and which matrix cells remain ASK. Transition: Gate 4 separates fast rule feedback from slower HTTP/JPA proof. Timing: 50-minute concept/practice loop.
+
+[Sources]
+- Workshop branch 03: https://github.com/codeartify/ai-assisted-clean-code-workshop-java/tree/ai-day1-03-behaviour-specification
 -->
 
 ---
 
 <p class="kicker">GATE 3 RESOLVED</p>
 
-# We have an owned behavioral contract
+# The Many case now protects the rule
 
-## Now we have
+## Branch 03 proves
 
-Given/When/Then matrix + deliberately unresolved cases + public-surface regression tests
+First of two paid → SUSPENDED<br/>
+Last remaining invoice paid → ACTIVE<br/>
+No identifier → 400 · Unknown invoice → 404
 
-<div class="callout">NEXT → Assign each risk to the smallest test boundary that can actually prove it.</div>
+<div class="callout">NEXT → Decide which rules need fast tests and which need HTTP + database proof.</div>
 
 <!--
-Story beat: Separate test intent from test cost. Trainer: Ask one person to identify a test assertion that would remain valid after package/class movement. Transition: Gate 4 composes fast rule feedback and slower wiring proof. Timing: 2 minutes.
+Story beat: Show the concrete result, not an abstract “behavioral contract.” Trainer: Branch 03 adds one multi-invoice flow test plus tests for missing and unknown identifiers. The multi-invoice test proves that the first payment leaves the membership SUSPENDED and the final payment makes it ACTIVE. Existing tests still cover One invoice, retries, cancellation, an ended membership period, and another suspension reason. Invoice relevance, membership-only selection, and callback authentication remain explicit owner questions. Transition: We now know what must happen. Gate 4 decides which rules should be tested quickly in memory and which require the HTTP/JPA boundary. Timing: 2 minutes.
+
+[Sources]
+- Workshop branch 03: https://github.com/codeartify/ai-assisted-clean-code-workshop-java/tree/ai-day1-03-behaviour-specification
 -->
 
 ---

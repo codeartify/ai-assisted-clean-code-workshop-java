@@ -8,7 +8,7 @@ reset only through normal Git operations agreed with the group.
 |---|---|---|---|
 | 1. Unguided baseline | `ai-day1-00-start` | `ai-day1-01-unguided-baseline` | A compact all-invoices check looks credible but leaves transaction, security, selection, and meaning unresolved. |
 | 2. Contract evidence | `ai-day1-01-unguided-baseline` | `ai-day1-02-verified-contracts` | Evidence supports an atomic transaction; missing auth and ambiguous selection stay visible. |
-| 3. Behavior specification | `ai-day1-02-verified-contracts` | `ai-day1-03-behaviour-specification` | A multi-invoice public-surface test exposes the actual failure and defines the resolution. |
+| 3. ZOMBIES behavior selection | `ai-day1-02-verified-contracts` | `ai-day1-03-behaviour-specification` | One invoice lets both “any paid” and “all paid” pass. The smallest revealing Many case pays one of two invoices and proves that the membership must stay suspended. Missing policy/security cells remain ASK. |
 | 4. Test portfolio | `ai-day1-03-behaviour-specification` | `ai-day1-04-test-design` | Fast policy tests guide rule edits; HTTP/JPA tests retain contract coverage. |
 | 5. Safe refactoring | `ai-day1-04-test-design` | `ai-day1-05-safe-refactoring` | One application operation removes mixed responsibility without creating a framework. |
 | 6. Blast radius | `ai-day1-05-safe-refactoring` | `ai-day1-06-vsa-blast-radius` | The use case moves into an explicit slice and a test enforces no slice-to-slice dependency. |
