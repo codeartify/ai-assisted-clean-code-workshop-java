@@ -1,20 +1,25 @@
-# Test portfolio for the payment callback
+# Gate 4 sample — Two feedback loops for the payment callback
 
-The goal is fast trustworthy feedback, not a pyramid-shaped quota.
+Read with [gate4-exercise.md](gate4-exercise.md) and the
+[worked solution](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-04-test-design/workshop/solutions/gate4-solution.md).
 
-| Speed | Boundary | What this branch protects | Why it earns its cost |
-|---|---|---|---|
-| Fast | Pure Java object, in process | The reactivation decision for unpaid invoices, dates, and suspension reasons | Runs without Spring or persistence; gives the agent immediate rule feedback |
-| Slow | Spring HTTP + JPA, out-of-process boundary simulated in memory | JSON mapping, response status, repository queries, transaction wiring, and persisted outcomes | These risks only exist when framework and persistence pieces meet |
-| Very slow | Real external invoice provider or deployed callback | Provider compatibility, network/security configuration, and production-like delivery | Useful before release or in contract checks; too expensive for every edit |
+| Cost category | Boundary in this repository | What the sample exercises | Limit |
+| --- | --- | --- | --- |
+| Fast | Java policy and real data objects in memory | Four decisions: allow reactivation, unpaid invoice remains, period ended, other suspension reason | No HTTP, query, persistence, or transaction proof; the policy still accepts a JPA entity |
+| Slow | MockMvc + Spring + JPA/H2 in one process | Nine callback scenarios covering lookup, response fields/status, and normal-path stored outcomes | Not every stored row/error-body outcome is asserted; no deliberate rollback failure or production DB check |
+| Very slow | A real provider, separately running application, or deployed flow | No such test is added in this sample | The contract and risk must be known before a test can establish compatibility/authentication |
 
-## Deliberate choices
+## What changes from 03 to 04
 
-- State assertions protect business outcomes; there are no assertions about how
-  many times a repository method was called.
-- The pure policy tests do not repeat JSON or database wiring.
-- The integration tests retain the public HTTP surface and persistence contract.
-- A true external-provider test is named but not fabricated in this repository.
+The reactivation decision and four fast tests are extracted. All nine HTTP/JPA
+tests remain. No repository call-count assertions existed to remove. This is
+the first useful split, not a claim that the slower suite has been fully pruned.
 
-Point to remember: pay for realism where the risk crosses a boundary; keep the
-business rule fast enough to guide every agent iteration.
+No mocks are needed for the policy. Test dates are explicit. The H2 fixture and
+MockMvc do not require a real external process or HTTP server. Classify this
+fixture as slow relative to the policy tests because it starts and integrates
+the framework and persistence components.
+
+Run the policy suite first, then the callback suite, then the full Java suite.
+Use failures to locate the problem, not to assume its cause without inspecting
+the assertion or exception. Report actual timings/results when measured.
