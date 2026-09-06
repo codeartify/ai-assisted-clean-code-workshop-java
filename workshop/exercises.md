@@ -1,70 +1,60 @@
-# Participant exercise briefs
+# Day 1 — Participant exercise index
 
-## 1. Review an unguided AI change
+One payment-callback change runs through seven exercises. Each guide contains
+the task, a sample agent prompt, expected output, checks, stopping point, and
+debrief. Read the worked example only after producing your own result.
 
-Start: `ai-day1-00-start`  
-Sample: `ai-day1-01-unguided-baseline`
+## Start here
 
-Give the agent only the feature request and normal repository context. Review the resulting diff for decisions about behavior, ownership, failure semantics, transactions, security, test scope, and architecture. Do not fix the code yet.
+- Work in `java/` with the Java/Maven versions required by the repository.
+- Use the exercise's named start branch. Keep participant work on your own
+  branch; do not overwrite sample branches or discard local work.
+- The production target is `MembershipController.paymentReceived`.
+  `PaymentReceivedControllerTest` is its test class, not a production controller.
+- Invoke only the skills named for that gate. Gate 1 is intentionally unguided.
+- Report actual command results. A method count, annotation, or command written
+  in a document is not evidence that a check ran or a failure path was tested.
 
-Point: generated code is a reviewable hypothesis, not a trusted solution.
+For example, from a clean checkout, begin Gate 1 with:
 
-## 2. Verify contracts before implementation
+```sh
+git fetch origin
+git switch -c participant/gate-1 origin/ai-day1-00-start
+```
 
-Start: `ai-day1-01-unguided-baseline`  
-Sample: `ai-day1-02-verified-contracts`
+Before the next gate, preserve your work and create a fresh participant branch
+from its named start. Do not use a hard reset to switch exercises.
 
-Complete `contract-evidence-template.md`. Verify the installed Spring version, repository APIs, request and response types, exception mapping, transaction behavior, and callback authorization evidence. Correct only claims the repository disproves. Keep missing knowledge visible.
+## Seven connected gates
 
-Point: plausibility is not evidence; verify or explicitly escalate.
+| Gate and guide | Start branch | Sample branch | What you produce |
+| --- | --- | --- | --- |
+| [1 — Review the agent's decisions](gate1-exercise.md) | `ai-day1-00-start` | `ai-day1-01-unguided-baseline` | Annotated diff, three ranked consequences, acceptance verdict |
+| [2 — Answer questions with evidence](gate2-exercise.md) | `ai-day1-01-unguided-baseline` | `ai-day1-02-verified-contracts` | Evidence sheet, supported correction, owner questions |
+| [3 — Find the next behavior test](gate3-exercise.md) | `ai-day1-02-verified-contracts` | `ai-day1-03-behaviour-specification` | ZOMBIES assessment and approved regression coverage |
+| [4 — Choose useful feedback boundaries](gate4-exercise.md) | `ai-day1-03-behaviour-specification` | `ai-day1-04-test-design` | Fast policy tests, retained HTTP/JPA checks, test portfolio |
+| [5 — Rank and refactor](gate5-exercise.md) | `ai-day1-04-test-design` | `ai-day1-05-safe-refactoring` | Ranked diagnosis, small approved sequence, refactoring log |
+| [6 — Decide where code belongs](gate6-exercise.md) | `ai-day1-05-safe-refactoring` | `ai-day1-06-vsa-blast-radius` | Placement decision, bounded move, dependency check and limits |
+| [7 — Teach the next agent](gate7-exercise.md) | `ai-day1-06-vsa-blast-radius` | `ai-day1-07-workflow-skills` | Repository workflow skill and a before/after plan comparison |
 
-## 3. Use ZOMBIES to choose the next behavior test
+## How to use the prompts and solutions
 
-Start: `ai-day1-02-verified-contracts`  
-Sample: `ai-day1-03-behaviour-specification`
+Prompts are examples to adapt, not magic wording. When a guide separates
+assessment and implementation, review the assessment before authorizing edits.
+Missing business or security policy remains a question for an owner.
 
-Use the `non-brittle-tests` skill and complete
-`behaviour-matrix-template.md`. Move from Zero to One to Many while checking
-boundary behavior, interface definition, and exceptional behavior. Mark missing
-product or security rules **ASK**. Then add the smallest scenario that can reveal
-new behavior: two unpaid invoices, followed by a callback that pays only one.
+All participant guides are available on `main` and branches 00–07. Worked
+solutions live under `workshop/solutions/`, starting on their corresponding
+solution branch and retained on later branches. Each guide links to the exact
+sample branch, so you can compare without switching or losing your work.
 
-Point: one invoice cannot distinguish “any paid” from “all paid”; two invoices
-can. Choose the smallest next test that can reveal the difference, and keep the
-scenario and solution simple.
+For Gate 1, give the agent only the feature request and normal application
+context. Do not feed it this index, other gates, or trainer answers before it
+produces the baseline. Save the specialist workflows for their named exercises.
 
-## 4. Give the agent feedback at the right cost
+The older top-level `exercises/` folder contains upstream architecture-course
+material. **This index is the AI-Assisted Clean Code Day 1 sequence.**
 
-Start: `ai-day1-03-behaviour-specification`  
-Sample: `ai-day1-04-test-design`
-
-Choose the smallest sufficient scope for each risk. Keep HTTP/JPA tests for contracts that cross those boundaries; move the reactivation decision into a fast deterministic policy test. Remove interaction assertions that are not part of the business contract.
-
-Point: pay for realism only where the risk requires it, and keep most feedback fast.
-
-## 5. Guide one safe refactoring
-
-Start: `ai-day1-04-test-design`  
-Sample: `ai-day1-05-safe-refactoring`
-
-Use `clean-code-refactoring` in Full Format. Identify one primary smell, choose the smallest useful refactoring, run focused tests after each meaningful step, and write a stop condition. Do not create a universal billing framework.
-
-Point: safe refactoring is a sequence of behavior-preserving decisions, not a rewrite.
-
-## 6. Constrain the blast radius
-
-Start: `ai-day1-05-safe-refactoring`  
-Sample: `ai-day1-06-vsa-blast-radius`
-
-Use `modern-application-architecture`. Classify the feature, list protected rules and change axes, propose the lightest structure, then move the payment callback into a vertical slice. Do not make one slice depend directly on another. Add a boundary test.
-
-Point: put code where its intended scope of change is visible and enforceable.
-
-## 7. Encode the workflow for the next change
-
-Start: `ai-day1-06-vsa-blast-radius`  
-Sample: `ai-day1-07-workflow-skills`
-
-Create a focused repository skill that tells the agent when to use it, what evidence to inspect, how to define behavior, when to invoke the three general skills, what not to invent, what commands to run, when to stop, and what completion report to produce. Compare an agent plan with and without the skill.
-
-Point: codify repeatable judgment; keep facts, workflows, and executable constraints in their proper homes.
+See [trainer-branch-guide.md](trainer-branch-guide.md) for the reveal sequence and
+[material-sources.md](material-sources.md) for the sources and the differences
+between intended exercises and existing sample coverage.
