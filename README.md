@@ -5,6 +5,11 @@ Workshop. One payment-callback change progresses through evidence gathering,
 behaviour specification, test design, safe refactoring, architecture, and a
 repository-specific agent workflow.
 
+**Start the exercises:** [Day 1 participant guides](workshop/exercises.md).
+Each gate includes the task, sample prompts, expected output, checks, and a
+link to its worked solution. The `workshop/` sequence is the AI-assisted Day 1
+course; the top-level `exercises/` folder is supporting upstream material.
+
 ## Source provenance
 
 - The course material comes from
@@ -68,10 +73,10 @@ instead of inventing a token or signature scheme.
 | `ai-day1-00-start` | Java baseline plus exercise brief, templates, commands, and supplied skills. |
 | `ai-day1-01-unguided-baseline` | Deliberately plausible implementation containing reviewable, unsupported decisions. |
 | `ai-day1-02-verified-contracts` | Contract evidence, smallest supported corrections, and explicit unresolved security knowledge. |
-| `ai-day1-03-behaviour-specification` | Given/When/Then behaviour matrix and public-surface regression coverage. |
+| `ai-day1-03-behaviour-specification` | ZOMBIES scenario selection and public-surface regression coverage. |
 | `ai-day1-04-test-design` | Fast policy feedback combined with slower HTTP/JPA evidence. |
 | `ai-day1-05-safe-refactoring` | One smell-driven, behaviour-preserving extraction with a stop condition. |
-| `ai-day1-06-vsa-blast-radius` | Explicit payment-recording slice and enforceable slice-dependency rule. |
+| `ai-day1-06-vsa-blast-radius` | Payment operation/policy grouped by use case, with a limited source-import dependency check. |
 | `ai-day1-07-workflow-skills` | Repository-specific workflow skill, guidance, and synchronized trainer material. |
 
 Each solution branch is the participant starting point for the next exercise.
@@ -80,6 +85,7 @@ The complete mapping is in
 
 ## Trainer material
 
+- [Day 1 design and trainer schedule](https://docs.google.com/document/d/1h4bXvkMorB8BFPruceNmVvkSDgQ_MLg2IQWtxj0vCOY)
 - [Day 1 plan and trainer schedule](https://docs.google.com/document/d/1XkfkWm36xWhyYSrYRbuV1-Mt4tw9chwyuYCSTgflhH0/edit)
 - [Editable Google presentation](https://docs.google.com/presentation/d/123zizmbeCzcsFFFdBxZp7V64Hqlunne4XxUQNexBVtw/edit)
 - Markdown presentation with speaker notes:
