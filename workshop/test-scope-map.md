@@ -1,14 +1,27 @@
-# Test scope map
+# Gate 4 — Choose the test boundary for the risk
 
-Use Jimmy Bogard's pragmatic labels for this workshop:
+Use with [gate4-exercise.md](gate4-exercise.md). These are practical workshop
+categories, not fixed time limits or quotas for a test pyramid.
 
-- **Fast:** runs in-process and gives the agent tight feedback on policy or use-case behavior.
-- **Slow:** crosses an out-of-process boundary such as a real database connection or HTTP adapter.
-- **Very slow:** starts or depends on external processes; keep only when it proves a cross-process risk no cheaper test can establish.
+- **Fast:** deterministic Java objects in memory; no Spring or database startup.
+- **Slow:** framework/persistence integration. The full MockMvc + Spring +
+  JPA/H2 fixture is slower than a policy test even though it runs in one process.
+  MockMvc does not require a real HTTP server.
+- **Very slow:** a real provider, separately running application, or deployed
+  workflow. Use it only for a defined risk that cheaper checks cannot establish.
 
-| Risk | Suggested proof | Cost class | What a failure diagnoses |
-| --- | --- | --- | --- |
-| Reactivation policy | Pure policy/use-case test | Fast | Business rule regression |
-| Request/response and error contract | MockMvc application test | Fast/in-process in this fixture | HTTP mapping or orchestration regression |
-| JPA query or transaction semantics | Repository/application test with real H2 | Slow relative to policy test | Persistence behavior |
-| External invoice provider compatibility | Targeted adapter/contract test | Slow or very slow | Provider contract mismatch |
+| Behavior or failure risk | Observation to assert | Smallest sufficient boundary | Cost category / measured time | What failure would suggest | Known limit |
+| --- | --- | --- | --- | --- | --- |
+| Reactivation decision | | | | | |
+| Request/response and error mapping | | | | | |
+| Invoice lookup and persisted outcomes | | | | | |
+| Failure after an earlier state update | | | | | |
+| External provider or authentication compatibility | | | | | |
+
+Prefer real objects. Introduce a fake, stub, or mock only for a specific boundary
+that needs it. Avoid repository call counts and private implementation details
+unless the interaction itself is an owned contract.
+
+Record actual timings only when measured. Mark untested risks and missing
+contracts clearly. A normal-path Spring/JPA test does not automatically prove
+rollback, production-database compatibility, or provider authentication.
