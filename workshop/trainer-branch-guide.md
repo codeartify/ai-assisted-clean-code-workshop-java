@@ -31,3 +31,40 @@ The guides describe a trainer replay sequence. They do not claim that each
 small move is a separate historical commit, or that a test ran merely because
 its expected result is written down. Participant implementations can differ
 while satisfying the same behavior and review requirements.
+
+## Gate 7 — General coordination and transfer (15:50–16:40)
+
+Concept, 10 minutes: distinguish local facts from general procedure. Map the
+six gates to understand; discover/verify; specify behavior and choose feedback;
+decide placement; implement incrementally; review/finish. Keep Gate 3 (what to
+test) distinct from Gate 4 (how). Gate 1 reviews throughout. The workshop's
+unguided baseline is a teaching comparison, not a mandatory development step.
+Architecture may come early; protected refactoring may precede a behavior
+change. Every gate is considered; full specialist work is conditional.
+
+Practice, 40 minutes, using the exact requests in [gate7-exercise.md](gate7-exercise.md):
+
+1. **5 min — Baseline A:** fresh session on branch 06, without the coordinator.
+   Save the transaction-reference planning response. Do not give this baseline
+   session the exercise text, trainer answers, or proposed workflow.
+2. **12 min — Draft/review:** create `.agents/skills/implement-feature/SKILL.md`
+   from the six gates and reference the unchanged specialist skills. Discover
+   local facts; avoid payment paths and rules in the coordinator.
+3. **8 min — Guided A:** fresh session, identical request/model settings/code
+   and repository guidance, explicitly invoke the new skill. Compare decisions.
+4. **5 min — Transfer B:** fresh session, unchanged skill, plan-title filter.
+   Look for PlanController/PlanService and suitable tests instead of payment
+   assumptions, automatic ports, or compulsory policy extraction.
+5. **10 min — Debrief/reveal:** inspect actual plans, improve the skill where
+   justified, and reveal branch 07. If the skill changes, name its version and
+   repeat the affected check. Save observations in `workshop/gate7-plan-comparison.md`.
+
+Both requests are plan-only; participants do not implement either feature.
+Keep repository guidance unchanged during the A comparison; any justified
+AGENTS.md cleanup follows it. Sample branch 07 supplies the skill and assessment
+criteria, not fabricated before/after results. A longer plan is not improvement.
+
+Debrief: Which unsupported decision became visible? Which scenario distinguishes
+the intended rule? Which test boundary is useful? Which specialist was not
+needed? When did the order change, and why? Did B work without domain edits to
+the skill? Which decision still needs an owner?
