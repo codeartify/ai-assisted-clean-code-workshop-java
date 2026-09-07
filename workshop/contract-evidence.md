@@ -1,30 +1,70 @@
-# Payment callback contract evidence
+# Gate 2 — Worked evidence sheet
 
-This is the sample output for Exercise 2. It records what the repository proves,
-what the exercise deliberately preserves, and what still needs an owner.
+This is the review of the **prepared `ai-day1-01-unguided-baseline`**, followed by
+the correction on `ai-day1-02-verified-contracts`. It is kept on later branches as
+the Gate 2 example. It is not a claim about the coverage of every participant output
+or later branch.
 
-| Question | Evidence | Decision for this branch |
-|---|---|---|
-| Which runtime contract applies? | `java/pom.xml` declares Java 21 and Spring Boot 4.0.6. | Use APIs available in that installed version; do not answer from model memory alone. |
-| What is the public request shape? | `PaymentReceivedRequest` has external invoice id, external reference, membership id, and paid timestamp. | Preserve all four fields and their current precedence. |
-| What is the public response shape? | `PaymentReceivedResponse` and the existing controller tests define seven fields and current messages. | Preserve the response shape and established messages. |
-| How is a billing reference resolved? | The controller tries external id, then external reference, then the first result for membership id. | Preserve precedence for now. “First” is not a stable business rule and is an open product decision. |
-| What does “all invoices paid” mean here? | The repository exposes all billing references for a membership; the entity exposes `isPaid()`. | For this exercise, all stored billing references for that membership must be paid. Relevance by date or cancellation is unresolved. |
-| What state changes together? | One callback marks an invoice paid and may reactivate a membership. Both use JPA repositories. | Make the application operation transactional so partial state is not committed. |
-| How are failures mapped? | The controller maps missing identifiers to 400 and unknown references/memberships to 404. | Preserve those mappings. Invalid UUID formatting is not specified and needs a deliberate contract. |
-| How is the callback authenticated? | No security dependency, filter, signature field, or authentication test is present. | Do not invent a mechanism. Record this as a security decision for the product owner. |
-| What proves idempotency? | `isPaid()` guards the state update, and an existing public-surface test repeats a callback. | Preserve retry behavior and add no interaction-based assertion. |
+| **Question** | **What did you find?** | **CLOSE / FIX / TEST / ESCALATE** |
+| --- | --- | --- |
+| Which invoices count? | `MembershipBillingReferenceRepository.findByMembershipId` returns every stored billing reference for this membership. The callback checks `isPaid()` on all of them. The README says “all relevant” but does not define whether future, voided, or disputed invoices count. | **ESCALATE** — ask the business owner which invoices are relevant; preserve the current query during this exercise. |
+| Can the list be empty? | Before the all-paid query, `MembershipController.paymentReceived` has found a stored billing reference and taken its membership ID. The later query should include that reference on consistent data without concurrent deletion. Although `allMatch` returns true for an empty stream, that alone does not show a bug on this path. | **CLOSE** — for this callback path under those conditions. This does not define a general rule for memberships with no invoices. |
+| Which invoice does membershipId mean? | The callback falls back to `findByMembershipId(...).stream().findFirst()`. A membership can have several invoices, and the repository query defines no ordering or selection rule. | **ESCALATE** — ask the API/business owner which invoice to select, or whether an invoice identifier should be required. |
+| Do both updates commit together? | The callback saves the invoice, then may save the membership. Branch 01 has no transaction around the whole operation. `pom.xml` includes Spring Data JPA, which supports such a boundary. A later failure could otherwise leave the payment saved on its own. | **FIX** — add the enclosing transaction. A rollback test is still needed to demonstrate failure behavior. |
+| Who may send the callback? | The README explicitly leaves authentication unresolved. The local provider and existing tests do not define a production sender-verification contract. | **ESCALATE** — ask the security owner and provider for the callback authentication requirements. |
+| Is the many-invoice rule tested? | The six tests in branch 01's `PaymentReceivedControllerTest` each use one invoice. None pays one of two open invoices and checks that the membership stays suspended, then pays the final invoice and checks reactivation. | **TEST** — add that scenario in Gate 3. |
 
-## Smallest verified correction
+Sources for this prepared review: [callback](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-01-unguided-baseline/java/src/main/java/com/workshop/architecture/fitness/MembershipController.java),
+[invoice repository](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-01-unguided-baseline/java/src/main/java/com/workshop/architecture/fitness/MembershipBillingReferenceRepository.java),
+[tests](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-01-unguided-baseline/java/src/test/java/com/workshop/architecture/PaymentReceivedControllerTest.java),
+[build](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-01-unguided-baseline/java/pom.xml),
+and [business story](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-01-unguided-baseline/README.md#day-1-business-story).
 
-`paymentReceived` is now transactional because paying the invoice and possibly
-reactivating the membership form one application operation. This is supported by
-the installed Spring/JPA stack. No authentication scheme or invoice-selection
-rule was manufactured from guesswork.
+## What branch 02 changes
 
-## Still unresolved
+It adds `org.springframework.transaction.annotation.Transactional` and
+`@Transactional` to `MembershipController.paymentReceived`. The invoice update
+and possible membership update now have one declared transaction boundary.
+The all-paid query, identifier fallback, HTTP responses, and six tests remain unchanged.
 
-- Which invoice is selected when only a membership id is provided?
-- Do voided, future, disputed, or otherwise irrelevant invoices count?
-- Which party owns callback authentication and replay protection?
-- Should an invalid UUID be a 400, and is that part of this API's contract?
+Record the fix as applied. Do not close the rollback question just because the
+annotation exists or the happy-path tests pass: that failure path still needs a test.
+
+## If the agent already wrote the many-invoice test
+
+Change the last row to match the actual implementation. For example, after running
+a test like `partialPaymentAndRepeatedCallbackKeepMembershipSuspendedUntilFinalInvoiceIsPaid`:
+
+| **Question** | **What did you find?** | **CLOSE / FIX / TEST / ESCALATE** |
+| --- | --- | --- |
+| Is the many-invoice rule tested? | The passing test pays one of two open invoices, retries that payment, and then pays the final invoice. It checks the HTTP responses and reloads invoice/membership state. | **CLOSE** — for those scenarios. This does not settle which other invoice types should count. |
+
+Use the real test name and observed result. If it exists but could not run, record
+**TEST** with the execution blocker. Do not claim it is missing or passed.
+If the agent already added a transaction, inspect its scope instead of applying
+the sample fix again; rollback evidence remains a separate question.
+
+The prepared branch 03 adds
+`paymentOfOneInvoiceKeepsMembershipSuspendedUntilEveryInvoiceIsPaid`, retained on
+branches 04–07. It checks the membership status in HTTP responses for partial and final payment.
+It does not reload persisted state for assertions in that scenario. Review those
+assertions as they are; do not describe them as the stronger participant test above.
+
+## Record your run
+
+From `java/`, run `mvn -q -DskipTests compile` and
+`mvn -q -Dtest=PaymentReceivedControllerTest test`. After a production change,
+also run `mvn -q test` as required by the repository instructions.
+Write down the branch/commit, commands, actual results, and any checks not run.
+This worked sheet does not substitute for executing them on the implementation reviewed.
+
+## Questions that still need an owner
+
+- Business owner: which invoices count toward reactivation?
+- API/business owner: which invoice does a membership-only callback identify?
+- Security owner/provider contract: how is the callback sender authenticated?
+
+Keep other questions from the actual diff, such as malformed-identifier responses
+or replay requirements, in the review notes. A **HOLD** must name an unresolved
+decision or missing check. Neither `allMatch` nor a difference from the prepared
+test suite is a reason by itself.
