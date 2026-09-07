@@ -24,11 +24,11 @@ thresholds. Measure commands instead of inventing speed claims.
 
 ## Your task
 
-1. Ask the agent to map each important behavior and failure risk to the smallest
-   sufficient test boundary. Use [test-scope-map.md](test-scope-map.md).
+1. Use `non-brittle-tests` to review the reactivation decision and the existing
+   callback tests.
 2. Extract the deterministic reactivation decision and add fast tests for it.
 3. Keep endpoint tests where HTTP, lookup, response mapping, persistence, or
-   application wiring is part of the risk. Explain each retained test's value.
+   application wiring is part of the risk.
 4. Remove interaction assertions only if they exist and are not part of an owned
    contract. Do not remove useful tests to meet a test-count target.
 5. Run fast feedback first, then the HTTP/JPA suite, then the full Java suite.
@@ -42,12 +42,13 @@ or expensive boundary requires a double. Do not mock a pure policy's own data.
 Work from ai-day1-03-behaviour-specification. Use non-brittle-tests and normal
 repository context. Do not use the refactoring or architecture skills yet.
 
-Review the callback's behavior matrix and tests. Map each risk to fast in-memory
-feedback, Spring/HTTP/JPA feedback, or a genuinely external check. Explain what
-each boundary proves and its cost in workshop/test-portfolio.md.
+Review the callback's reactivation decision, existing tests, and the scenarios
+identified with ZOMBIES in Gate 3.
 
 Extract only the deterministic membership reactivation decision into a small
-policy and add fast behavior tests. Keep time explicit. Preserve the existing
+policy and add tests that run without Spring or a database. Cover all invoices
+paid, an invoice still unpaid, an ended membership, and another suspension reason.
+Use explicit dates. Preserve the existing
 HTTP contract, invoice selection, response messages, stored outcomes, and
 transaction scope. Keep the slower tests that check those integrations.
 Explain retained overlap; remove unowned interaction assertions only if present.
@@ -57,13 +58,12 @@ assertions. Do not fabricate provider or authentication tests without a contract
 Do not extract the whole payment operation or move feature packages yet.
 
 Run the fast policy suite, then the focused callback suite, then the full Java
-suite. Report what changed, which risks each suite protects, remaining gaps,
-and actual command results. State any framework/model coupling that remains.
+suite. Briefly summarize the code/test changes, why any tests or assertions were
+removed, remaining gaps, and actual command results in your reply.
 ```
 
 ## Expected output and checks
 
-- A test-scope map explaining why each risk needs its chosen boundary.
 - A small policy extraction with fast tests of the reactivation decision.
 - Retained HTTP/JPA coverage and a reason for any removed assertion or test.
 - Separate command results and a list of risks still not exercised.
