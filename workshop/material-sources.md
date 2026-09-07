@@ -34,8 +34,11 @@ The guides resolve these inconsistencies in older wording:
   API records, entities, repositories, and callback test stay in their existing
   locations. The boundary check scans certain source imports; it is not a full
   dependency analyzer.
-- Gate 7 contains a sample workflow skill. A real before/after agent-plan
-  comparison is participant output, not something already proven by that file.
+- Gate 7 extracts the general `implement-feature` coordinator from Gates 1–6.
+  It keeps scenario selection separate from feedback design, allows justified
+  reordering, and uses specialist skills conditionally. The unchanged skill is
+  evaluated on callback-reference lookup and a plan-title filter. Real before/after
+  and transfer observations are participant output, not claims proven by the file.
 
 All exercise guides are available on every Day 1 branch. Detailed worked
 solutions appear from their solution branch onward. The trainer and slide

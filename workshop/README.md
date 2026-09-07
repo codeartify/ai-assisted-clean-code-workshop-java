@@ -1,6 +1,6 @@
 # AI-Assisted Clean Code Workshop - Day 1 repository
 
-This workshop starts from the Java `MembershipController` on the upstream `main` branch and follows one cumulative feature through evidence gathering, behavior specification, tests, safe refactoring, architecture, and agent skills.
+This workshop starts from the Java `MembershipController` on the upstream `main` branch and follows one cumulative feature through evidence gathering, behavior specification, tests, safe refactoring, and architecture. Gate 7 extracts a general coordinating skill and checks its transfer to another feature.
 
 **Participant entry point: [Seven exercise guides](exercises.md).**
 Each includes the task, sample prompts, expected output, checks, debrief, and
@@ -27,7 +27,7 @@ The callback authentication mechanism is intentionally unresolved: the repositor
 | `ai-day1-04-test-design` | Fast policy feedback plus slower HTTP/JPA proof at deliberately chosen scopes. |
 | `ai-day1-05-safe-refactoring` | Controller orchestration extracted in small behavior-preserving steps with a stop condition. |
 | `ai-day1-06-vsa-blast-radius` | Payment operation/policy grouped together, shared dependencies named, and a limited import check added. |
-| `ai-day1-07-workflow-skills` | Repository-specific `SKILL.md`, concise guidance, trainer notes, and final deck. |
+| `ai-day1-07-workflow-skills` | General `implement-feature` skill, comparison/transfer checks, concise guidance, and trainer material. |
 
 Every solution branch is the starting point for the next exercise. Participant work can be local and nondeterministic; the trainer switches to the next branch only for the sample-solution walkthrough.
 

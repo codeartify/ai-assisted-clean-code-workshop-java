@@ -1,45 +1,60 @@
-# Gate 7 — Teach the next agent the workflow
+# Gate 7 — Build a general feature-coordination skill
 
 Start: `ai-day1-06-vsa-blast-radius`
 
 Sample solution: `ai-day1-07-workflow-skills`
 
-Materials: the three supplied skills, repository instructions, and your findings
-from Gates 1–6.
+Materials: findings from Gates 1–6, repository guidance, and the three supplied
+specialist skills. Preserve those specialist skills.
 
 ## What this adds
 
-Turn a successful one-off change into a repeatable workflow. The goal is better
-decisions on the next request, not a longer instruction file.
+Extract a reusable `implement-feature` workflow from the payment example. It
+must discover the affected feature and coordinate the six engineering gates
+without hardcoding payment classes, invoice rules, or payment-only commands.
+Each application of the workflow still has a bounded change scope.
 
-| Knowledge from today | Its useful home |
+| Course gate | Place in the general workflow |
 | --- | --- |
-| Current business meaning and responsibilities | Code and names |
-| Required observable outcomes | Behavior tests |
-| A forbidden dependency that can be checked | Architecture test |
-| Build commands, useful examples, and legacy traps | `AGENTS.md`, backed by the repository |
-| When to inspect, test, refactor, ask, verify, and stop | A focused `SKILL.md` |
-| Undefined invoice policy or callback authentication | A question for the responsible owner |
+| 1 — Review agent decisions | Review assumptions, the plan, meaningful increments, and the final diff |
+| 2 — Verify with evidence | Understand and discover contracts, installed APIs, current behavior, and unknowns |
+| 3 — Find the next behavior test | Use ZOMBIES to select a revealing scenario with an owned expected outcome |
+| 4 — Choose feedback boundaries | Use `non-brittle-tests` to choose useful realism, speed, and assertions |
+| 5 — Refactor safely | Diagnose/rank actual design pressure and make a small protected change when justified |
+| 6 — Decide placement | Discover the use case, shared dependencies, and lightest useful boundary |
+
+Suggested phases: understand the request; discover and verify scope; specify
+behavior and choose tests; decide placement; implement incrementally; review
+and finish. Gate 3 decides **what** to test; Gate 4 decides **how** to test it.
+Bring architecture or refactoring forward when evidence justifies it. Review
+throughout. The unguided baseline from Gate 1 is not a required production step.
 
 ## Your task
 
-1. On branch 06, save a baseline agent plan for the small follow-up request
-   below. Keep it read-only. Use a fresh session and no repository-specific
-   payment workflow skill; it does not exist on this start branch.
-2. Review repeated findings from the day and inspect the three supplied skills.
-   Decide which knowledge belongs in code/tests, repository facts, a workflow,
-   or an owner question.
-3. Ask the agent to draft `.agents/skills/membership-payment-change/SKILL.md`.
-   Give it a clear trigger, evidence order, behavior/test steps, conditional
-   specialist-skill use, verification commands, stop conditions, and report.
-4. Keep stable facts in `AGENTS.md` and link to the actual code and tests. Keep
-   the supplied general skills unchanged; reference them instead of copying
-   their contents. Review the draft before using it.
-5. In a fresh session, use the new skill with the same follow-up request. Compare
-   the two plans, record concrete differences, and improve the skill where it
-   fails to guide a decision. Do not implement the follow-up feature here.
+1. On a participant branch from 06, save a read-only baseline plan for request A
+   below in a fresh agent session. Keep the new coordinating skill absent. Do not
+   give that session this exercise, later solutions, or the proposed workflow.
+   Normal repository guidance and the three supplied skills remain available.
+2. Inspect the day's findings. Keep business meaning in code/names, observable
+   outcomes in behavior tests, enforceable dependencies in architecture tests,
+   and local paths/commands/examples in `AGENTS.md`. Leave unknown policy with
+   its responsible owner. Put reusable sequencing and decisions in the skill.
+3. Draft `.agents/skills/implement-feature/SKILL.md` with a clear trigger, the
+   six-phase workflow, explicit gate mapping, conditional specialist use,
+   adaptable ordering, verification, stop conditions, and completion report.
+   Read the three supplied skills and reference them instead of copying them.
+4. Review the draft. In a fresh session, explicitly invoke `implement-feature`
+   with the identical request A. Keep application code, request text, repository
+   guidance, and model settings the same for this comparison. Record concrete
+   decision differences in `workshop/gate7-plan-comparison.md`.
+5. Use the unchanged skill in another fresh session with request B. Check that
+   it discovers the plan feature and selects its own evidence/tests without
+   payment assumptions or mandatory architecture/refactoring work.
+6. Record the transfer result and improve the skill where it fails to guide a
+   decision. If it changes, state which runs used which version and repeat the
+   affected comparison. Make any justified `AGENTS.md` cleanup after the comparison.
 
-## Shared follow-up request — use unchanged in both comparisons
+## Request A — use unchanged before and after adding the skill
 
 ```text
 Plan support for looking up a callback invoice by a provider transaction
@@ -49,68 +64,75 @@ boundaries, likely file changes, verification commands, and a stop condition.
 Do not invent missing provider, identifier-precedence, or authentication rules.
 ```
 
-Keep the underlying code and request the same. Save the baseline before adding
-the skill, then start a fresh session for the comparison. For the second run,
-explicitly invoke `membership-payment-change`. This is a practical comparison
-of plans, not a controlled proof that a skill improves every model output.
-
-## Sample agent prompt — create the workflow
+## Request B — transfer to another feature
 
 ```text
-Work from ai-day1-06-vsa-blast-radius. Use our review findings, contract evidence,
-ZOMBIES assessment, test portfolio, refactoring log, and architecture decision.
-Inspect the existing repository instructions and the three supplied skills.
+Plan an optional titleContains query parameter for GET /api/plans. An omitted
+or blank parameter keeps the existing full list. A supplied value selects plans
+whose title contains that value, ignoring case; no matches returns an empty
+list. Preserve the response shape. Do not change application code.
+Inspect the plan feature, identify the next revealing scenario and its test
+boundary, likely file changes, verification commands, unresolved decisions,
+and a stop condition. Explain whether architecture or refactoring work is
+needed. Do not impose payment rules or invent a new ordering contract.
+```
 
-Create .agents/skills/membership-payment-change/SKILL.md with a name and
-description that identify when it applies. Define an ordered workflow:
-inspect installed and owned contracts; identify intended behavior and ASK
-items; select the next useful test; choose its boundary; make the approved
-change; verify; stop; report.
+This is a practical comparison of plans and a transfer check. It does not prove
+that a skill improves every model output. More prose is not itself improvement.
 
-Reference non-brittle-tests for tests, clean-code-refactoring in Full Format
-for refactoring, and modern-application-architecture when placement or
-dependencies need reconsideration. Do not require every specialist workflow
-for a tiny change. Preserve the supplied skills.
+## Sample prompt — create the coordinator
 
-Keep facts and commands in AGENTS.md concise and backed by actual files.
-Do not duplicate whole tests or business rules into prose. Require owner input
-for undefined invoice relevance, ambiguous lookup, and authentication. State
-that the current boundary test scans imports and does not prove full isolation.
-Include focused/broad commands, stop conditions, and the completion report.
+```text
+Work from ai-day1-06-vsa-blast-radius. Use our findings from Gates 1–6 and
+inspect the repository instructions and three supplied specialist skills.
+Create .agents/skills/implement-feature/SKILL.md for planning and implementing
+features across this repository, including changes to existing behavior.
 
-Change only the workflow/documentation for this exercise. Explain the trigger,
-where each piece of knowledge belongs, and how I can evaluate the resulting
-skill on a new planning request.
+Define: understand intent and acceptance criteria; discover and verify affected
+scope; select a revealing behavior scenario with ZOMBIES and separately choose
+its test boundary; decide placement; implement in small verified increments;
+review and finish. Map these decisions explicitly to course Gates 1–6.
+
+Use non-brittle-tests for behavior/test design, clean-code-refactoring for an
+evidenced design problem, and modern-application-architecture when placement
+or dependencies need a decision. Keep their contents unchanged. Consider every
+gate without requiring a full specialist assessment for every tiny change.
+Allow architecture early and protected refactoring before a behavior change.
+Review throughout; never require an unguided implementation as the first step.
+
+Discover paths, contracts, rules, and commands from the affected code, tests,
+and AGENTS.md. Do not hardcode payment-specific examples as universal policy.
+Respect plan-only requests and existing authorization. Ask about missing rules
+that block the next step; report unrelated inherited gaps without expanding
+scope. Define verification, ACCEPT/HOLD/REJECT criteria, stop conditions, and
+a concise report of actual results and limits.
+
+Change only the coordinating skill for the comparison. Explain how to evaluate
+it on request A and transfer it to request B. Do not implement either feature.
 ```
 
 ## Expected output and checks
 
-- The focused workflow skill and any justified, concise `AGENTS.md` update.
-- `workshop/gate7-plan-comparison.md`: both plans and a short comparison of
-  evidence inspected, owner questions, test choice, change scope, and stopping.
-- Examples of decisions improved by the workflow, or an honest report that a
-  comparison showed no meaningful improvement yet.
+- The reviewed general skill, with resolvable links to unchanged specialists.
+- A comparison note containing A's baseline and guided plans, B's guided plan,
+  source branch/commit, skill version, and actual observations.
+- Compare intent/assumptions, evidence, scenario choice, feedback boundary,
+  placement, refactoring need, scope, owner questions, verification, and stopping.
+- An honest report if no useful improvement or transfer was demonstrated.
 
-Check that every referenced path and command exists on the solution branch.
-Inspect the diff for accidental application changes. If the agent executes
-verification, report actual results; do not claim it ran just because the
-command appears in the skill. Follow the repository's verification requirements.
-
-Relevant commands from `java/`:
-
-```sh
-mvn -q -Dtest=MembershipReactivationPolicyTest,PaymentReceivedControllerTest test
-mvn -q -Dtest=VerticalSliceBoundaryTest test
-mvn -q test
-```
+Check that referenced paths and commands exist on the inspected branch. The
+coordinator should discover focused commands for the affected feature; it must
+not prescribe the payment test suite for request B. Keep proposed commands and
+executed results separate. Inspect the diff for application changes and follow
+the repository's verification requirements for any authorized edits.
 
 ## Compare and conclude
 
-Open the [Gate 7 worked solution on branch 07](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-07-workflow-skills/workshop/solutions/gate7-solution.md).
-Did your skill change a decision or only add prose? Which instruction is better
-expressed as a test? What must still make an agent ask a human?
+Open the [Gate 7 worked solution on branch 07](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-07-workflow-skills/workshop/solutions/gate7-solution.md)
+after reviewing your own skill and plans. Which decision improved? Which gate
+moved earlier, and why? Which specialist was unnecessary? What still needs an
+owner? Did request B work without editing the skill's domain assumptions?
 
-Stop after the reviewed workflow and plan comparison. Choose one code, test,
-or workflow improvement to carry into your own repository.
-**Your codebase guides the next agent through facts, examples, tests, and a
-repeatable procedure.**
+Stop after the reviewed skill and plan comparison. No application feature is
+implemented in Gate 7. Take one reusable workflow improvement into your own
+repository, with facts and behavior protected in their appropriate homes.
