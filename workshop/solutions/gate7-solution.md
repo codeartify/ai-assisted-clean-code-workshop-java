@@ -1,52 +1,58 @@
-# Gate 7 — Worked repository workflow
+# Gate 7 — Worked general feature workflow
 
 Reveal after [the participant exercise](../gate7-exercise.md).
 Compare `ai-day1-06-vsa-blast-radius` with `ai-day1-07-workflow-skills`.
 
 ## The sample artifact
 
-Read [.agents/skills/membership-payment-change/SKILL.md](https://github.com/codeartify/ai-assisted-clean-code-workshop-java/blob/ai-day1-07-workflow-skills/.agents/skills/membership-payment-change/SKILL.md).
-Its name and description identify callback/payment/reactivation work. Its
-procedure directs the agent through:
+Read [implement-feature/SKILL.md](../../.agents/skills/implement-feature/SKILL.md).
+It replaces the former payment-specific coordinator. Its trigger covers new
+features, behavior changes, bug fixes, and explicit plan-only work. It discovers
+the affected use case; the payment slice is an example rather than its scope.
 
-1. Installed build contracts, HTTP records, operation, entities/repositories,
-   existing tests, and the evidence note.
-2. ZOMBIES behavior discovery, with unresolved policy left for an owner.
-3. `non-brittle-tests` to choose fast policy and HTTP/JPA feedback.
-4. `clean-code-refactoring` in Full Format for a small refactoring sequence.
-5. `modern-application-architecture` when placement or dependencies need review.
-6. Focused/broad verification, stopping conditions, and a completion report.
-
-`AGENTS.md` adds the repository-specific skill to its existing list. The
-dependency test already exists from Gate 6; branch 07 does not introduce a
-stronger dependency analyzer. Other branch additions are trainer material.
-
-## What to look for in the plan comparison
-
-Use the same provider-transaction-reference planning request in both sessions.
-The following are useful assessment criteria, not fabricated agent results:
-
-| Question | A useful guided plan does this |
+| Phase | Gate and decision |
 | --- | --- |
-| Where does the change begin? | Inspects request types, lookup logic, stored identifiers, tests, and build contracts |
-| What is unknown? | Asks whether the reference is unique, how it maps to invoices, and how it interacts with existing identifiers |
-| Which tests? | Uses HTTP/lookup/persistence checks for identifier wiring; keeps unaffected policy tests fast |
-| Does this require architecture work? | Justifies extra boundaries instead of adding a port for every new field |
-| What must wait? | Leaves provider/authentication and undefined precedence to their owners |
-| When is it done? | Names the agreed behavior, commands, review scope, and stop condition |
+| Understand | Gate 1: expose intent, acceptance criteria, preserved behavior, assumptions, and scope |
+| Discover and verify | Gate 2: use appropriate evidence; CLOSE, FIX, TEST, or ESCALATE |
+| Specify and choose feedback | Gate 3: revealing ZOMBIES scenario; Gate 4: suitable test boundary |
+| Decide placement | Gate 6: current home, shared dependencies, and justified boundaries |
+| Implement incrementally | Gates 3–4: useful checks; Gate 5: ranked, protected refactoring when needed |
+| Review and finish | Gate 1 throughout; revisit other gates, verify, and recommend ACCEPT/HOLD/REJECT |
 
-The published branch contains the skill, not a recorded empirical comparison
-of two agent runs. Participants create that comparison during the exercise.
-If a plan is merely longer, the skill has not demonstrated useful improvement.
+Architecture can come earlier; protected refactoring can precede a behavior
+change. A passing new test may require no production change. Undefined outcomes
+need an owner. Plan-only work stops at a reviewed plan. These are decision rules,
+not instructions to perform every specialist workflow on every request.
+
+`AGENTS.md` supplies repository facts and example commands for different areas.
+The three specialist skills stay unchanged. Branch 07 changes documentation and
+workflow guidance; the Java implementation and Gate 6 import check remain the
+same. That check still does not prove complete isolation through shared types.
+
+## Assess the comparison and transfer
+
+The following are evaluation criteria, not recorded results from agent runs.
+
+| Check | Request A: transaction-reference lookup | Request B: plan-title filter |
+| --- | --- | --- |
+| Discover scope | Callback request/lookup, persisted references, provider contract, tests | PlanController, PlanService, plan storage/response, PlanControllerTest |
+| Identify unknowns | Uniqueness, invoice mapping, identifier precedence, authentication | Unproven matching details or ordering; preserve the explicitly supplied filter rules |
+| Select feedback | HTTP/lookup/persistence checks; keep unaffected policy tests fast | Omitted/blank input, mixed-case substring, no match; query mapping and returned plans |
+| Decide design work | Justify any new boundary from the actual provider/lookup requirement | Existing placement may suffice; no automatic policy extraction, port, or payment-slice move |
+| Stop honestly | Review the plan and owner questions; no implementation or claimed execution | Review the plan and its scope; no implementation or invented test results |
+
+Participants save A's before/after plans and B's transfer plan in
+`workshop/gate7-plan-comparison.md`, recording the branch/commit and skill version.
+Hold application code, repository guidance, request A, and model settings constant
+between A's runs. Use fresh sessions. Do not claim a controlled experiment or
+universal improvement from a small comparison.
 
 ## Review the sample too
 
-Keep the general skills referenced, not copied into a giant file. Do not make
-every tiny callback change run a full refactoring ceremony. Recheck any phrase
-that implies complete isolation: the current policy accepts a JPA entity and
-the architecture test only scans certain imports. Instructions cannot create
-missing business or security authority.
+Can it discover a different feature without being edited? Are Gate 3 and Gate 4
+distinct? Does it avoid unnecessary specialist work while considering every gate?
+Are facts/commands grounded in the repository? Does it respect plan-only scope
+and existing authorization? Are unknown rules visible and actual results honest?
 
-The day's reusable output is the combination: understandable code, behavior
-tests, fast feedback, explicit dependencies, accurate repository facts, and a
-workflow that tells the agent when to inspect, act, verify, ask, and stop.
+Keep general procedure in the coordinator, detailed technique in specialists,
+and business meaning, examples, commands, and enforced rules in the repository.

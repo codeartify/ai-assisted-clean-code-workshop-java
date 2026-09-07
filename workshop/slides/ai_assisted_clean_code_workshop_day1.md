@@ -858,102 +858,131 @@ Story beat: Close the architecture loop. Trainer: Ask a participant to answer �
 <p class="number">07</p>
 <p class="kicker">GATE 7 · GUARDRAILS</p>
 
-# What should the codebase teach the next agent?
+# How should an agent implement the next feature?
 
-Put each kind of knowledge in the representation that can express or enforce it best.
+Turn Gates 1–6 into a general workflow that adapts to the change.
 
 <!--
-Story beat: Convert a successful one-off change into reusable engineering leverage. Trainer: Explain that instructions cannot compensate for misleading code, and a skill cannot invent product knowledge. Transition: Map the prompt surfaces. Timing: 1 minute.
+Gate 7 outcome: create implement-feature, a general coordinating skill based on Gates 1–6. The course introduces the checks in a teaching order; real feature work can reorder them when evidence justifies it. Gate 1 reviews assumptions, plans, increments, and the final diff. The unguided baseline is a teaching comparison, not a required development step. Keep the concept block to 10 minutes; practice is 40 minutes.
 -->
 
 ---
 
-<p class="kicker">PROMPT SURFACES</p>
+<p class="kicker">GUIDANCE FOR THE NEXT CHANGE</p>
 
 # Your codebase is the prompt
 
-- **Code + names:** Current behavior · business meaning · responsibility
-- **Behavior tests:** Observable contracts and regressions
-- **Architecture tests:** Mechanically enforced dependency rules
-- **AGENTS.md:** Stable facts · commands · preferred examples · legacy traps
-- **SKILL.md:** Triggered workflow · evidence order · gates · verification · stop
-- **Humans:** Missing product, security, legal, and ownership decisions
+| Home | Example |
+| --- | --- |
+| Code + names | RecordMembershipPayment shows where payment work belongs. |
+| Behavior tests | Two invoices: one still unpaid means stay suspended. |
+| Architecture tests | Fail on an import from another payment slice. |
+| AGENTS.md | Where to start and which commands to run. |
+| SKILL.md | implement-feature coordinates changes using the relevant local facts. |
+| Humans | Own missing business, product, and security decisions. |
 
 <!--
-Story beat: Reconnect every block to the core thesis. Trainer: Give one example for each surface from the day. Emphasize that the strongest home is the one that remains true and can enforce or explain the knowledge. Transition: Test the mapping with concrete statements. Timing: 6 minutes.
+Use the payment rows as examples of local facts. Business meaning stays in code and names; behavior tests exercise known outcomes; architecture tests enforce specific dependency rules. AGENTS.md supplies grounded paths, commands, and examples. implement-feature discovers the affected feature and sequences decisions; it does not encode a fixed payment file list. Humans own unknown product and security rules. Ask which information becomes stale if copied into the skill.
 -->
 
 ---
 
 <p class="kicker">PUT KNOWLEDGE WHERE IT BELONGS</p>
 
-# Facts, workflows, invariants, and decisions are different
+# Where should each lesson live?
 
-| Statement | Strongest home | Why |
+| Statement | Save it in | Why |
 | --- | --- | --- |
-| Java 21 · Spring Boot 4.0.6 | AGENTS.md / pom.xml | Stable orientation backed by build |
-| Cancelled never reactivates | Code + behavior test | Current rule and executable proof |
-| Slices cannot depend on slices | Architecture test | Hard rule should fail mechanically |
-| Inspect behavior before refactor | SKILL.md | Ordered reusable procedure |
-| Callback authentication unknown | Human decision / evidence note | Repository has no authority |
+| Cancelled never reactivates | Code + behavior test | Protect the result when code moves |
+| No cross-slice imports | Architecture test | Catch forbidden dependencies |
+| Review tests before refactoring | implement-feature / SKILL.md | Repeat useful steps |
+| Callback authentication unknown | Owner decision + note | The agent must ask |
 
 <!--
-Story beat: Prevent one giant instruction file. Trainer: Ask the room to place each statement before revealing the answer. Explain that AGENTS.md can point to a hard rule but should not be its only enforcement. Transition: Define what makes a workflow skill useful rather than verbose. Timing: 6 minutes.
+Ask participants where each lesson belongs. The callback examples remain facts about this repository; the repeatable decision procedure belongs in implement-feature. The current import check has known blind spots and cannot prove complete isolation through shared types. A missing authentication contract remains an owner question, not a reason to invent a port or a rule.
 -->
 
 ---
 
 <p class="kicker">A USEFUL SKILL</p>
 
-# Trigger → evidence → behavior → gates → verify → stop → report
+# implement-feature: six gates, one workflow
 
-1. Trigger
-2. Evidence order
-3. Behavior
-4. Skill gates
-5. Commands
-6. Stop
-7. Report
+| Check | Next decision |
+| --- | --- |
+| START | Understand request |
+| GATE 2 | Discover + verify |
+| GATE 3 | Choose behavior |
+| GATE 4 | Choose feedback |
+| GATE 6 | Decide placement |
+| GATE 5 | Implement in steps |
+| GATE 1 | Review + finish |
 
-<div class="callout">A skill changes decisions and sequence. “Write clean code” changes neither.</div>
+<div class="callout">Review throughout. Adapt the order to the change.</div>
 
 <!--
-Story beat: Give participants a concrete anatomy. Trainer: Walk through membership-payment-change/SKILL.md in execution order. Show how it invokes non-brittle-tests, clean-code-refactoring, and architecture only at the relevant gates; points to code/tests rather than copying them; and stops on missing invoice relevance/authentication. Transition: Participants build a smaller repository-specific workflow and compare plans. Timing: 6 minutes.
+Walk the default phases: understand observable intent, acceptance criteria, preserved behavior, and scope; discover contracts, installed APIs, dependencies, and tests with evidence (Gate 2); select a revealing ZOMBIES scenario (Gate 3); separately choose feedback boundaries (Gate 4); decide placement and shared dependencies (Gate 6); implement in small verified increments and refactor actual design pressure when justified (Gate 5); review and finish (Gate 1). Gate 1 also operates throughout. These are seven displayed decisions inside the six-phase coordinating workflow: scenario choice and test-boundary choice are shown separately. Use CLOSE/FIX/TEST/ESCALATE for evidence findings and ACCEPT/HOLD/REJECT for review. A plan-only request ends with a reviewed plan, not an implementation claim.
+-->
+
+---
+
+<p class="kicker">CONDITIONAL SPECIALISTS</p>
+
+# Choose the next useful step
+
+| Decision | Guidance |
+| --- | --- |
+| Test design | Use non-brittle-tests for cases, boundaries, and assertions. |
+| Refactoring | Use clean-code-refactoring for an evidenced design problem. |
+| Placement | Use modern-application-architecture for boundary decisions. |
+| Change the order | Check architecture early; protect behavior before preparatory refactoring. |
+| Already passes | Keep useful coverage. Make no unnecessary production change. |
+| Missing rule | Pause dependent work; ask its owner. Review decisions throughout. |
+
+<!--
+Every gate is considered; detailed specialist work is conditional. Use non-brittle-tests for behavior coverage and feedback design, clean-code-refactoring when a concrete smell or responsibility problem warrants it, and modern-application-architecture when boundaries or dependencies need a decision. Move architecture earlier when shared rules or cross-boundary changes demand it. Preparatory refactoring requires adequate behavior protection and a separately reviewable structural change. If a new test already passes, report the coverage improvement without inventing a production edit. Unknown required outcomes remain owner decisions. Honor existing authorization and plan-only scope; do not ask permission again for routine steps already authorized. Stop when the agreed outcome is supported by required verification; HOLD when required decisions or evidence are missing.
 -->
 
 ---
 
 <p class="kicker">CONCRETE PRACTICE 7</p>
 
-# Encode repeated judgment for the next change
+# Build implement-feature; check its transfer
 
 **Branch:** 06 → 07
 
-1. Create trigger and evidence order
-2. Sequence test/refactor/architecture skills
-3. Add do-not-invent and stop conditions
-4. Compare an agent plan with and without the skill
+1. Save request A's plan without the coordinator
+2. Draft implement-feature from Gates 1–6
+3. Repeat A with the skill; compare decisions
+4. Use the unchanged skill for B: plan-title filter
 
-<div class="callout">Debrief: Did the skill improve decisions—or only the prose? Which finding became cheaper next time?</div>
+<div class="callout">Did decisions improve? Did the workflow transfer beyond payments?</div>
 
 <!--
-Participant work: 22 minutes. Trainer sample: Switch to ai-day1-07-workflow-skills. Show the new skill, concise AGENTS.md guidance, and the architecture test. Reject vague best-practice rules and duplicated facts. Compare the same neighboring-change planning prompt with and without the skill. Transition: Reconstruct how all seven artifacts changed the repository prompt. Timing: 50-minute loop.
+Practice: 40 minutes on a participant branch from ai-day1-06-vsa-blast-radius. 5 min: fresh-session baseline plan for request A without the coordinator; do not feed that session the exercise or proposed workflow. 12 min: draft and review .agents/skills/implement-feature/SKILL.md, referencing the three unchanged specialist skills. 8 min: fresh-session guided A with identical request, application code, repository guidance, and model settings. 5 min: fresh-session request B using the unchanged skill. 10 min: compare decisions, debrief, improve where justified, and reveal branch 07. Save A baseline/guided plans and B transfer plan in workshop/gate7-plan-comparison.md with source commit and skill version. If the skill changes, repeat the affected check. Keep both requests plan-only; any justified AGENTS.md cleanup follows the comparison.
+
+Request A: Plan support for looking up a callback invoice by a provider transaction reference. Do not change application code. Identify the existing code and contracts you would inspect, questions that must be answered, proposed test boundaries, likely file changes, verification commands, and a stop condition. Do not invent missing provider, identifier-precedence, or authentication rules.
+
+Request B: Plan an optional titleContains query parameter for GET /api/plans. An omitted or blank parameter keeps the existing full list. A supplied value selects plans whose title contains that value, ignoring case; no matches returns an empty list. Preserve the response shape. Do not change application code. Inspect the plan feature, identify the next revealing scenario and its test boundary, likely file changes, verification commands, unresolved decisions, and a stop condition. Explain whether architecture or refactoring work is needed. Do not impose payment rules or invent a new ordering contract.
+
+Use workshop/gate7-exercise.md for the exact prompts. A longer plan is not evidence of a better decision.
 -->
 
 ---
 
-<p class="kicker">DAY 1 RESULT</p>
+<p class="kicker">SAMPLE SOLUTION 7</p>
 
-# The codebase now guides the next agent
+# Branch 07: one workflow, different features
 
-## Now we have
+## General coordinator
 
-Verified contracts · behavior backpressure · fast feedback · business language · bounded slice · mechanical rules · reusable workflow
+Discover each feature’s contracts, tests, and change scope.
+Choose specialists when useful. Verify, review, and stop.
 
-<div class="callout">CONCLUSION → Compare the opening prompt surface with the final repository and retrieve the full loop.</div>
+<div class="callout">NEXT → Take the workflow to a feature in your own repository.</div>
 
 <!--
-Story beat: Close the cumulative story. Trainer: Do not imply autonomous correctness. The repository is better evidence and the workflow is safer, but unresolved product/security knowledge still stops the agent. Transition: Run the retrieval exercise and personal commitment. Timing: 3 minutes.
+Reveal .agents/skills/implement-feature/SKILL.md on ai-day1-07-workflow-skills and the concise AGENTS.md examples for different feature areas. Show the gate map, separation of behavior and feedback, conditional specialist routing, flexible ordering, plan-only handling, and stopping criteria. Compare actual participant plans. Request A should discover callback lookup/contracts and owner questions; request B should discover PlanController/PlanService and suitable plan tests. Existing placement and no substantive refactoring may be appropriate for B. The published skill and solution contain assessment criteria, not a recorded empirical comparison or a universal quality claim.
 -->
 
 ---
