@@ -8,10 +8,14 @@ The Day 1 workshop uses the Java application under `java/`. Treat the Python app
 
 Run commands from `java/` with Java 21:
 
-- Focused payment callback tests: `mvn -q -Dtest=PaymentReceivedControllerTest test`
+- Payment callback example: `mvn -q -Dtest=PaymentReceivedControllerTest test`
+- Plan endpoint example: `mvn -q -Dtest=PlanControllerTest test`
 - Full Java verification: `mvn -q test`
 
-Run the focused command first while iterating, then the full command before declaring completion.
+Choose focused tests for the affected feature; the examples are not mandatory
+for unrelated work. Run the focused checks first while iterating, then the full
+command before declaring an implementation complete. For plan-only requests,
+report proposed commands separately from any checks actually executed.
 
 ## Evidence and boundaries
 
@@ -29,4 +33,7 @@ Reusable workflows live under `.agents/skills/`:
 - `clean-code-refactoring` for small behavior-preserving refactoring
 - `modern-application-architecture` for placement, boundaries, and escalation gates
 
-Use the repository-specific orchestration skill when present. If product, security, or ownership knowledge is missing, stop and ask rather than manufacturing a rule.
+Follow the current exercise's skill restrictions during the workshop. Outside
+those controlled comparisons, use a specialist when its decision is needed.
+If missing product, security, or ownership knowledge blocks the next step,
+ask its owner rather than manufacturing a rule.

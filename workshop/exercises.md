@@ -35,7 +35,7 @@ from its named start. Do not use a hard reset to switch exercises.
 | [4 — Choose useful feedback boundaries](gate4-exercise.md) | `ai-day1-03-behaviour-specification` | `ai-day1-04-test-design` | Fast policy tests, retained HTTP/JPA checks, test portfolio |
 | [5 — Rank and refactor](gate5-exercise.md) | `ai-day1-04-test-design` | `ai-day1-05-safe-refactoring` | Ranked diagnosis, small approved sequence, refactoring log |
 | [6 — Decide where code belongs](gate6-exercise.md) | `ai-day1-05-safe-refactoring` | `ai-day1-06-vsa-blast-radius` | Placement decision, bounded move, dependency check and limits |
-| [7 — Teach the next agent](gate7-exercise.md) | `ai-day1-06-vsa-blast-radius` | `ai-day1-07-workflow-skills` | Repository workflow skill and a before/after plan comparison |
+| [7 — Teach the next agent](gate7-exercise.md) | `ai-day1-06-vsa-blast-radius` | `ai-day1-07-workflow-skills` | General coordinating skill, before/after plans, and a transfer check |
 
 ## How to use the prompts and solutions
 
