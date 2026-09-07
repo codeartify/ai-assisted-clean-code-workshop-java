@@ -77,7 +77,7 @@ instead of inventing a token or signature scheme.
 | `ai-day1-04-test-design` | Fast policy feedback combined with slower HTTP/JPA evidence. |
 | `ai-day1-05-safe-refactoring` | One smell-driven, behaviour-preserving extraction with a stop condition. |
 | `ai-day1-06-vsa-blast-radius` | Payment operation/policy grouped by use case, with a limited source-import dependency check. |
-| `ai-day1-07-workflow-skills` | Repository-specific workflow skill, guidance, and synchronized trainer material. |
+| `ai-day1-07-workflow-skills` | General implement-feature coordinator, comparison/transfer exercises, and synchronized trainer material. |
 
 Each solution branch is the participant starting point for the next exercise.
 The complete mapping is in
